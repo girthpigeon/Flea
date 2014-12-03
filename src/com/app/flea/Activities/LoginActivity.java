@@ -1,95 +1,113 @@
 package com.app.flea.Activities;
 
-import com.parse.LogInCallback;
+import com.parse.SignUpCallback;
 import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.app.flea.R;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.util.Log;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-
-import java.util.List;
-import java.util.Arrays;
-
+import android.widget.EditText;
 
 public class LoginActivity extends Activity {
-	
-	private Dialog progressDialog;
 
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+    private Dialog progressDialog;
+    private ParseUser currentUser;
 
-		setup();
-	}
+    //UI Elements
+    private Button loginButton;
+    private EditText usernameTextBox;
+    private EditText passwordTextBox;
+    private EditText passwordMatchTextbox;
 
-	public void setup()
-	{
-		Button clickButton = (Button) findViewById(R.id.loginButton);
-		clickButton.setOnClickListener( new OnClickListener() {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.signup);
 
-			@Override
-			public void onClick(View v) {
+        setup();
+    }
 
-				loginClicked();
-				//LoginAsyncTask startLogin = new LoginAsyncTask();
-				//startLogin.execute();
-			}
-		});
+    public void setup() {
+        loginButton = (Button) findViewById(R.id.SignUp_Button);
+        usernameTextBox = (EditText) findViewById(R.id.Username_Textbox);
+        passwordMatchTextbox = (EditText) findViewById(R.id.PasswordMatch_Textbox);
+        passwordTextBox = (EditText) findViewById(R.id.Password_Textbox);
 
-		ParseUser currentUser = ParseUser.getCurrentUser();
-		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser))
-		{
-			//already logged in
-		}
-	}
+        loginButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentUser != null)
+                {
+                    //User clicked logout... will be moved to make actually work
+                    ParseUser.logOut();
+                    currentUser = null;
+                }
+                else
+                {
+                    ParseUser user = new ParseUser();
+                    user.setUsername(usernameTextBox.getText().toString());
+                    user.setPassword(passwordTextBox.getText().toString());
+                    user.signUpInBackground(new SignUpCallback() {
 
-	public void loginClicked()
-	{
-		LoginActivity.this.progressDialog = 
-				ProgressDialog.show(LoginActivity.this, "", "Logging in...", true);
-		
-		List<String> permissions = Arrays.asList( "user_friends", "user_birthday", "email");
-		ParseFacebookUtils.logIn(permissions, this, new LogInCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null)
+                            {
+                                //we are all good
+                            }
+                            else
+                            {
+                                //we've got ourselves an error
+                            }
+                        }
+                    });
+                }
+            }
+        });
 
-			@Override
-			public void done(ParseUser user, ParseException err) {
-				LoginActivity.this.progressDialog.dismiss();
-				if (user == null) {
-					Log.d("login",
-							"Uh oh. The user cancelled the Facebook login.");
-				} else if (user.isNew()) {
-					Log.d("login",
-							"User signed up and logged in through Facebook!");
-					//showUserDetailsActivity();
-				} else {
-					Log.d("login",
-							"User logged in through Facebook!");
-					//showUserDetailsActivity();
-				}
-			}
-		});
-	}
-	
-	public class LoginAsyncTask extends AsyncTask<Void, Void, String> {
-		 
-		  @Override protected String doInBackground(Void... params) {
-			  loginClicked();
-			  return null;  
-			  
-		  }
-		 
-		  @Override protected void onPostExecute(String result) {
-			  
-		  }
-		}
+        /* login
+        loginButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (currentUser != null)
+                {
+                    //User clicked logout... will be moved to make actually work
+                    ParseUser.logOut();
+                    currentUser = null;
+                }
+                else
+                {
+                    ParseUser.logInInBackground(usernameTextBox.getText().toString(),passwordTextBox.getText().toString(), new LogInCallback() {
+                        @Override
+            			public void done(ParseUser user, ParseException e) {
+                            if (e != null)
+                            {
+                                //we are all good
+                            }
+                            else
+                            {
+                                //we've got ourselves an error
+                            }
+                        }
+                    });
+                }
+            }
+        });*/
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null)
+        {
+
+        }
+    }
+
+    public void loginClicked() {
+
+    }
 }

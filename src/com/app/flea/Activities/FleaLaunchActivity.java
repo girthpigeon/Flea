@@ -9,14 +9,14 @@ import com.app.flea.R;
 
 public class FleaLaunchActivity extends Activity {
 
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		
-		ParseAnalytics.trackAppOpened(getIntent());
-		
-		Intent intent = new Intent(this, LoginActivity.class);
-		startActivity(intent);
-	}
-	
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        ParseAnalytics.trackAppOpened(getIntent());
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
 }
